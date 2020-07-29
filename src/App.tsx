@@ -1,7 +1,5 @@
 import React from "react";
-import logo from "./logo.svg";
 import "./App.css";
-import Rok from "./Icons/Rok";
 import { pieceTypes } from "./pieceTypes";
 import produce from "immer";
 
@@ -14,7 +12,7 @@ function Tile({ rowIdx, colIdx, piece, onClick, style }) {
         width: 150,
         height: 150,
         background: "#ccc",
-        margin: "1px",
+        marginBottom: 10,
         ...style,
       }}
     >
@@ -58,7 +56,8 @@ let BOARD_START = [
     { type: "Knight", id: "kg0", isWhite: true },
     null,
     null,
-    null,
+    { type: "Rok", id: "r0", isWhite: true },
+    ,
     null,
   ],
   [null, null, null, null, null, null, null, null],
@@ -72,7 +71,17 @@ let BOARD_START = [
     { type: "Pawn", id: "p6", isWhite: false },
     { type: "Pawn", id: "p7", isWhite: false },
   ],
-  [null, null, null, null, null, null, null, null],
+  [
+    null,
+    null,
+    null,
+    null,
+    { type: "Rok", id: "r0", isWhite: true },
+    ,
+    null,
+    null,
+    null,
+  ],
 ];
 
 function App() {
@@ -95,13 +104,13 @@ function App() {
             );
             return (
               <Tile
-                style={isPoss ? { background: "green" } : {}}
+                style={isPoss ? { background: "cyan" } : {}}
                 onClick={() => {
                   if (isPoss) {
                     const myPiece = board[selectedPiece.row][selectedPiece.col];
                     board[selectedPiece.row][selectedPiece.col] = null;
                     board[rowIdx][colIdx] = myPiece;
-                    setBoard(JSON.parse(JSON.stringify(board)));
+                    setBoard([...board]);
                     setSelectedPiece(null);
                     setPossMoves([]);
                   } else if (piece) {

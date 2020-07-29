@@ -75,7 +75,7 @@ const pieceTypes = {
         }
         moves.push({ row: newRow, col });
       }
-      newRow = col;
+      newRow = row;
       while (newRow > -1) {
         newRow--;
         const pieceInWay = board[newRow]?.[col];
