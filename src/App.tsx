@@ -17,8 +17,12 @@ function Tile({ rowIdx, colIdx, piece, onClick, style }) {
         ...style,
       }}
     >
-      {piece ? <Icon /> : piece}
-      rowIdx {rowIdx}
+      <div style={{ opacity: 0.2 }}>
+        r{rowIdx} c{colIdx}
+      </div>
+      <div style={{ padding: 10 }}>
+        {piece ? <Icon isWhite={piece.isWhite} /> : piece}
+      </div>
     </div>
   );
 }

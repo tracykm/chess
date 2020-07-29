@@ -1,8 +1,11 @@
 import React from "react";
 
-export default function Piece() {
+export default function Piece({ isWhite }) {
   return (
-    <svg viewBox="0 0 297 297" style={{ height: 100, width: 100 }}>
+    <svg
+      viewBox="0 0 297 297"
+      style={{ height: 100, width: 100, fill: isWhite ? "white" : "black" }}
+    >
       <path
         d="M216.923,246.538c3.457-6.556,9.963-22.777-1.666-39.137C200.508,186.65,179.942,125,193.61,83H207V0h-16v17h-16V0h-18v17
 		h-16V0h-17v17h-16V0H91v83h14.057c13.668,42-6.98,103.65-21.73,124.401c-11.629,16.359-5.373,32.706-1.916,39.262

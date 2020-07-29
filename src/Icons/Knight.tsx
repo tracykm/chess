@@ -1,8 +1,11 @@
 import React from "react";
 
-export default function Knight() {
+export default function Knight({ isWhite }) {
   return (
-    <svg viewBox="0 0 297 297" style={{ height: 100, width: 100 }}>
+    <svg
+      viewBox="0 0 297 297"
+      style={{ height: 100, width: 100, fill: isWhite ? "white" : "black" }}
+    >
       <path
         d="M210.952,116c14.912,0,27.037-12.088,27.037-27s-10.945-25.013-26.964-30.666c-11.333-4-18.018-10.823-23.009-19.412
 		C183.025,30.333,172.025,17,157.525,17c-5.832,0-19.798,0-19.798,0V0c-107,40.03-72.369,184-72.369,184h21.369v14h-6.369
