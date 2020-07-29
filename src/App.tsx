@@ -2,6 +2,7 @@ import React from "react";
 import "./App.css";
 import { pieceTypes } from "./pieceTypes";
 import produce from "immer";
+import { BOARD_START } from "./BOARD_START";
 
 function Tile({ rowIdx, colIdx, piece, onClick, style }) {
   const Icon = pieceTypes[piece?.type]?.icon;
@@ -26,72 +27,6 @@ function Tile({ rowIdx, colIdx, piece, onClick, style }) {
   );
 }
 
-let BOARD_START = [
-  [
-    null,
-    { type: "King", id: "k0", isWhite: true },
-    { type: "Rok", id: "r0", isWhite: true },
-    { type: "Knight", id: "kg0", isWhite: true },
-    null,
-    null,
-    null,
-    null,
-  ],
-  [
-    { type: "Pawn", id: "p0", isWhite: true },
-    { type: "Pawn", id: "p1", isWhite: true },
-    { type: "Pawn", id: "p2", isWhite: true },
-    { type: "Pawn", id: "p3", isWhite: true },
-    { type: "Pawn", id: "p4", isWhite: true },
-    { type: "Pawn", id: "p5", isWhite: true },
-    { type: "Pawn", id: "p6", isWhite: true },
-    { type: "Pawn", id: "p7", isWhite: true },
-  ],
-  [
-    null,
-    { type: "Pawn", id: "p0", isWhite: false },
-    null,
-    null,
-    null,
-    null,
-    { type: "King", id: "k0", isWhite: false },
-    null,
-  ],
-  [null, null, null, null, null, null, null, null],
-  [
-    null,
-    null,
-    null,
-    { type: "Knight", id: "kg0", isWhite: true },
-    null,
-    null,
-    { type: "Rok", id: "r0", isWhite: true },
-    null,
-  ],
-  [null, null, null, null, null, null, null, null],
-  [
-    { type: "Pawn", id: "p0", isWhite: false },
-    { type: "Rok", id: "r0", isWhite: true },
-    null,
-    { type: "Pawn", id: "p3", isWhite: false },
-    { type: "Pawn", id: "p4", isWhite: false },
-    { type: "Pawn", id: "p5", isWhite: false },
-    { type: "Pawn", id: "p6", isWhite: false },
-    { type: "Pawn", id: "p7", isWhite: false },
-  ],
-  [
-    null,
-    null,
-    null,
-    null,
-    { type: "Rok", id: "r0", isWhite: true },
-    ,
-    null,
-    null,
-    null,
-  ],
-];
-
 function App() {
   const [possMoves, setPossMoves] = React.useState([]);
   const [board, setBoard] = React.useState(BOARD_START);
@@ -102,8 +37,7 @@ function App() {
   }>();
   return (
     <div className="App">
-      <pre>{JSON.stringify(possMoves)}</pre>
-
+      {/* <pre>{JSON.stringify(possMoves)}</pre> */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(8, 1fr)" }}>
         {board.map((row, rowIdx) =>
           row.map((piece, colIdx) => {
@@ -112,6 +46,7 @@ function App() {
             );
             return (
               <Tile
+                key={rowIdx + colIdx}
                 style={isPoss ? { background: "cyan" } : {}}
                 onClick={() => {
                   if (isPoss) {
@@ -121,13 +56,32 @@ function App() {
                     setBoard([...board]);
                     setSelectedPiece(null);
                     setPossMoves([]);
+                    // const newPossMoves = pieceTypes[myPiece?.type].getPossMoves(
+                    //   {
+                    //     row: rowIdx,
+                    //     col: colIdx,
+                    //     isWhite: piece?.isWhite,
+                    //     board,
+                    //   }
+                    // );
+                    // newPossMoves.find(({ row, col }) => {
+                    //   const inDangerPiece = board[row][col];
+                    //   if (
+                    //     inDangerPiece &&
+                    //     inDangerPiece?.type === "King" &&
+                    //     inDangerPiece?.isWhite !== piece?.isWhite
+                    //   ) {
+                    //     alert("Check!");
+                    //   }
+                    // });
                   } else if (piece) {
                     setSelectedPiece({ piece, row: rowIdx, col: colIdx });
+                    debugger;
                     setPossMoves(
                       pieceTypes[piece?.type].getPossMoves({
                         row: rowIdx,
                         col: colIdx,
-                        isWhite: piece.isWhite,
+                        isWhite: piece?.isWhite,
                         board,
                       })
                     );
