@@ -66,7 +66,7 @@ const pieceTypes = {
       while (newRow < 7) {
         newRow++;
 
-        const pieceInWay = board[newRow][col];
+        const pieceInWay = board[newRow]?.[col];
         if (pieceInWay) {
           if (pieceInWay.isWhite !== isWhite) {
             moves.push({ row: newRow, col });
@@ -78,7 +78,7 @@ const pieceTypes = {
       newRow = col;
       while (newRow > -1) {
         newRow--;
-        const pieceInWay = board[newRow][col];
+        const pieceInWay = board[newRow]?.[col];
         if (pieceInWay) {
           if (pieceInWay.isWhite !== isWhite) {
             moves.push({ row: newRow, col });
@@ -95,8 +95,33 @@ const pieceTypes = {
     icon: Pawn,
     getPossMoves: ({ row, col, isWhite, board }) => {
       const offset = isWhite ? 1 : -1;
-      // TODO add dooble first move and side attack
-      return [{ row: row + offset, col }];
+      let moves = [{ row: row + offset, col }];
+
+      // double first move
+      if ((isWhite && row === 1) || (!isWhite && row === 6)) {
+        // debugger;
+        if (!board[row + offset * 2][col]) {
+          moves.push({ row: row + offset * 2, col });
+        }
+      }
+      moves = moves.filter((p) => {
+        if (board[p.row]?.[p.col]) {
+          // can't hit others
+          return false;
+        } else {
+          return true;
+        }
+      });
+      // Attacks
+      let pieceInWay = board[row + offset][col + offset];
+      if (pieceInWay && pieceInWay.isWhite !== isWhite) {
+        moves.push({ row: row + offset, col: col + offset });
+      }
+      pieceInWay = board[row + offset][col - offset];
+      if (pieceInWay && pieceInWay.isWhite !== isWhite) {
+        moves.push({ row: row + offset, col: col - offset });
+      }
+      return moves;
     },
   },
   King: {
