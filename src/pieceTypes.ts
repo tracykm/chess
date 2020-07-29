@@ -7,8 +7,68 @@ import Bishop from "./Icons/Bishop";
 
 const pieceTypes = {
   Knight: { icon: Knight },
-  Bishop: { icon: Bishop },
-  Rok: { icon: Rok },
+  Bishop: {
+    icon: Bishop,
+  },
+  Rok: {
+    icon: Rok,
+    getPossMoves: ({ row, col, board, isWhite }) => {
+      const moves = [];
+      let newCol = col;
+      while (newCol < 7) {
+        newCol++;
+        const pieceInWay = board[row][newCol];
+        if (pieceInWay) {
+          if (pieceInWay.isWhite !== isWhite) {
+            moves.push({ row, col: newCol });
+          }
+          break;
+        }
+        moves.push({ row, col: newCol });
+      }
+      newCol = col;
+      while (newCol > -1) {
+        newCol--;
+        const pieceInWay = board[row][newCol];
+        if (pieceInWay) {
+          if (pieceInWay.isWhite !== isWhite) {
+            moves.push({ row, col: newCol });
+          }
+          break;
+        }
+        moves.push({ row, col: newCol });
+      }
+
+      // vertical moves
+      let newRow = row;
+      while (newRow < 7) {
+        newRow++;
+
+        const pieceInWay = board[newRow][col];
+        if (pieceInWay) {
+          if (pieceInWay.isWhite !== isWhite) {
+            moves.push({ row: newRow, col });
+          }
+          break;
+        }
+        moves.push({ row: newRow, col });
+      }
+      newRow = col;
+      while (newRow > -1) {
+        newRow--;
+        const pieceInWay = board[newRow][col];
+        if (pieceInWay) {
+          if (pieceInWay.isWhite !== isWhite) {
+            moves.push({ row: newRow, col });
+          }
+          break;
+        }
+        moves.push({ row: newRow, col });
+      }
+
+      return moves;
+    },
+  },
   Pawn: {
     icon: Pawn,
     getPossMoves: ({ row, col, isWhite, board }) => {
