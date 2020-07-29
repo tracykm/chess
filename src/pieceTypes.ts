@@ -6,7 +6,29 @@ import King from "./Icons/King";
 import Bishop from "./Icons/Bishop";
 
 const pieceTypes = {
-  Knight: { icon: Knight },
+  Knight: {
+    icon: Knight,
+    getPossMoves: ({ row, col, isWhite, board }) => {
+      const moves = [];
+      [-2, 2, -1, 1].forEach((rowOffset) => {
+        [-1, 1, -2, 2].forEach((colOffset) => {
+          const newRow = row + rowOffset;
+          const newCol = col + colOffset;
+          if (Math.abs(rowOffset) === Math.abs(colOffset)) {
+          } else if (newRow === row && newCol === col) {
+            // can't stay in place
+          } else {
+            const pieceInWay = board[newRow]?.[newCol];
+            if (pieceInWay?.isWhite !== isWhite) {
+              moves.push({ row: newRow, col: newCol });
+            }
+          }
+        });
+      });
+      // this still returns moves off board but that's not been an issue yet
+      return moves;
+    },
+  },
   Bishop: {
     icon: Bishop,
   },
@@ -79,7 +101,7 @@ const pieceTypes = {
   },
   King: {
     icon: King,
-    getPossMoves: ({ row, col }) => {
+    getPossMoves: ({ row, col, isWhite, board }) => {
       const moves = [];
       [-1, 0, 1].forEach((rowOffset) => {
         [-1, 0, 1].forEach((colOffset) => {
@@ -88,7 +110,10 @@ const pieceTypes = {
           if (newRow === row && newCol === col) {
             // can't stay in place
           } else {
-            moves.push({ row: newRow, col: newCol });
+            const pieceInWay = board[newRow]?.[newCol];
+            if (pieceInWay?.isWhite !== isWhite) {
+              moves.push({ row: newRow, col: newCol });
+            }
           }
         });
       });
