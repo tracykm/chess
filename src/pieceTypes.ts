@@ -31,6 +31,7 @@ const pieceTypes = {
   },
   Bishop: {
     icon: Bishop,
+    getPossMoves: () => [],
   },
   Rok: {
     icon: Rok,
@@ -99,8 +100,8 @@ const pieceTypes = {
 
       // double first move
       if ((isWhite && row === 1) || (!isWhite && row === 6)) {
-        // debugger;
-        if (!board[row + offset * 2][col]) {
+        // only when no one in front
+        if (!board[row + offset][col]) {
           moves.push({ row: row + offset * 2, col });
         }
       }
@@ -145,7 +146,7 @@ const pieceTypes = {
       return moves;
     },
   },
-  Queen: { icon: Queen },
+  Queen: { icon: Queen, getPossMoves: () => [] },
 };
 
 export { pieceTypes };
