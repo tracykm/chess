@@ -3,6 +3,7 @@ import logo from "./logo.svg";
 import "./App.css";
 import Rok from "./Icons/Rok";
 import { pieceTypes } from "./pieceTypes";
+import produce from "immer";
 
 function Tile({ rowIdx, colIdx, piece, onClick, style }) {
   const Icon = pieceTypes[piece?.type]?.icon;
@@ -27,7 +28,7 @@ function Tile({ rowIdx, colIdx, piece, onClick, style }) {
   );
 }
 
-const board = [
+let BOARD_START = [
   [
     null,
     { type: "King", id: "k0", isWhite: true },
@@ -76,6 +77,12 @@ const board = [
 
 function App() {
   const [possMoves, setPossMoves] = React.useState([]);
+  const [board, setBoard] = React.useState(BOARD_START);
+  const [selectedPiece, setSelectedPiece] = React.useState<{
+    piece: {};
+    row: number;
+    col: number;
+  }>();
   return (
     <div className="App">
       <pre>{JSON.stringify(possMoves)}</pre>
@@ -90,14 +97,24 @@ function App() {
               <Tile
                 style={isPoss ? { background: "green" } : {}}
                 onClick={() => {
-                  setPossMoves(
-                    pieceTypes[piece?.type].getPossMoves({
-                      row: rowIdx,
-                      col: colIdx,
-                      isWhite: piece.isWhite,
-                      board,
-                    })
-                  );
+                  if (isPoss) {
+                    const myPiece = board[selectedPiece.row][selectedPiece.col];
+                    board[selectedPiece.row][selectedPiece.col] = null;
+                    board[rowIdx][colIdx] = myPiece;
+                    setBoard(JSON.parse(JSON.stringify(board)));
+                    setSelectedPiece(null);
+                    setPossMoves([]);
+                  } else if (piece) {
+                    setSelectedPiece({ piece, row: rowIdx, col: colIdx });
+                    setPossMoves(
+                      pieceTypes[piece?.type].getPossMoves({
+                        row: rowIdx,
+                        col: colIdx,
+                        isWhite: piece.isWhite,
+                        board,
+                      })
+                    );
+                  }
                 }}
                 {...{ rowIdx, colIdx, piece }}
               />
