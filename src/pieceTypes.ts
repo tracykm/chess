@@ -11,10 +11,10 @@ const pieceTypes = {
   Rok: { icon: Rok },
   Pawn: {
     icon: Pawn,
-    getPossMoves: ({ row, col, isWhite }) => {
+    getPossMoves: ({ row, col, isWhite, board }) => {
       const offset = isWhite ? 1 : -1;
       // TODO add dooble first move and side attack
-      return [{ row, col: col + offset }];
+      return [{ row: row + offset, col }];
     },
   },
   King: {
@@ -28,11 +28,11 @@ const pieceTypes = {
           if (newRow === row && newCol === col) {
             // can't stay in place
           } else {
-            moves.push({ row });
+            moves.push({ row: newRow, col: newCol });
           }
         });
       });
-      return [{ row, col: col + 1 }];
+      return moves;
     },
   },
   Queen: { icon: Queen },
