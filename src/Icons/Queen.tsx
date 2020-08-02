@@ -4,7 +4,10 @@ export default function Piece({ isWhite }) {
   return (
     <svg
       viewBox="0 0 297 297"
-      style={{ height: 100, width: 100, fill: isWhite ? "white" : "black" }}
+      style={{
+        fill: isWhite ? "white" : "black",
+        width: "80%",
+      }}
     >
       <path
         d="M207.218,255.77h-3.369c2.214-3.337,8.32-14.536-0.712-25.6c-8.9-10.905-25.129-39.546-24.438-64.4h3.519

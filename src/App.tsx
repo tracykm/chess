@@ -10,14 +10,22 @@ function Tile({ rowIdx, colIdx, piece, onClick, style }) {
     <div
       onClick={onClick}
       style={{
-        width: 150,
-        height: 150,
-        background: "#ccc",
-        marginBottom: 10,
+        height: "calc(100vw / 8)",
+        background: (rowIdx + colIdx) % 2 === 0 ? "#ccc" : "#aaa",
+        position: "relative",
         ...style,
       }}
     >
-      <div style={{ opacity: 0.2 }}>
+      <div
+        style={{
+          opacity: 0.2,
+          fontSize: 12,
+          position: "absolute",
+          bottom: 0,
+          width: "100%",
+          textAlign: "center",
+        }}
+      >
         r{rowIdx} c{colIdx}
       </div>
       <div style={{ padding: 10 }}>
@@ -38,7 +46,12 @@ function App() {
   return (
     <div className="App">
       {/* <pre>{JSON.stringify(possMoves)}</pre> */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(8, 1fr)" }}>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(8, 1fr)",
+        }}
+      >
         {board.map((row, rowIdx) =>
           row.map((piece, colIdx) => {
             const isPoss = !!possMoves.find(
@@ -58,6 +71,7 @@ function App() {
                     setPossMoves([]);
                   } else if (piece) {
                     setSelectedPiece({ piece, row: rowIdx, col: colIdx });
+                    debugger;
                     setPossMoves(
                       pieceTypes[piece?.type].getPossMoves({
                         row: rowIdx,

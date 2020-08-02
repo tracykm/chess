@@ -4,7 +4,11 @@ export default function Knight({ isWhite }) {
   return (
     <svg
       viewBox="0 0 297 297"
-      style={{ height: 100, width: 100, fill: isWhite ? "white" : "black" }}
+      style={{
+        marginTop: "10%",
+        width: "65%",
+        fill: isWhite ? "white" : "black",
+      }}
     >
       <path
         d="M210.952,116c14.912,0,27.037-12.088,27.037-27s-10.945-25.013-26.964-30.666c-11.333-4-18.018-10.823-23.009-19.412
