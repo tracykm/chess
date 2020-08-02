@@ -3,13 +3,15 @@ import "./App.css";
 import { pieceTypes } from "./pieceTypes";
 import { BOARD_START } from "./BOARD_START";
 
+const COL_NAMES = ["A", "B", "C", "D", "E", "F", "G", "H"];
+
 function Tile({ rowIdx, colIdx, piece, onClick, style }) {
   const Icon = pieceTypes[piece?.type]?.icon;
   return (
     <div
       onClick={onClick}
       style={{
-        height: "calc(100vw / 8)",
+        height: "min(calc(100vw / 8), calc(80vh / 8))",
         background: (rowIdx + colIdx) % 2 === 0 ? "#ccc" : "#aaa",
         position: "relative",
         ...style,
@@ -25,7 +27,8 @@ function Tile({ rowIdx, colIdx, piece, onClick, style }) {
           textAlign: "center",
         }}
       >
-        r{rowIdx} c{colIdx}
+        {COL_NAMES[colIdx]}
+        {8 - rowIdx}
       </div>
       <div style={{ padding: 10 }}>
         {piece ? <Icon isWhite={piece.isWhite} /> : piece}
@@ -59,6 +62,8 @@ function App() {
         style={{
           display: "grid",
           gridTemplateColumns: "repeat(8, 1fr)",
+          maxWidth: "80vh",
+          margin: "auto",
         }}
       >
         {board.map((row, rowIdx) =>

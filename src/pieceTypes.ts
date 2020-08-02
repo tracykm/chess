@@ -134,11 +134,11 @@ const pieceTypes = {
   Pawn: {
     icon: Pawn,
     getPossMoves: ({ row, col, isWhite, board }) => {
-      const offset = isWhite ? 1 : -1;
+      const offset = isWhite ? -1 : 1;
       let moves = [{ row: row + offset, col }];
 
       // double first move
-      if ((isWhite && row === 1) || (!isWhite && row === 6)) {
+      if ((isWhite && row === 6) || (!isWhite && row === 1)) {
         // only when no one in front
         if (!board[row + offset][col]) {
           moves.push({ row: row + offset * 2, col });
