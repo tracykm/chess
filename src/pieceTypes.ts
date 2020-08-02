@@ -153,7 +153,7 @@ const pieceTypes = {
         }
       });
       // Attacks
-      let pieceInWay = board[row + offset][col + offset];
+      let pieceInWay = board[row + offset]?.[col + offset];
       if (pieceInWay && pieceInWay.isWhite !== isWhite) {
         moves.push({ row: row + offset, col: col + offset });
       }

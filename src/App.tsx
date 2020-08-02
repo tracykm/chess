@@ -1,7 +1,6 @@
 import React from "react";
 import "./App.css";
 import { pieceTypes } from "./pieceTypes";
-import produce from "immer";
 import { BOARD_START } from "./BOARD_START";
 
 function Tile({ rowIdx, colIdx, piece, onClick, style }) {
@@ -43,9 +42,19 @@ function App() {
     row: number;
     col: number;
   }>();
+  const [isWhiteTurn, setIsWhiteTurn] = React.useState(true);
   return (
     <div className="App">
-      {/* <pre>{JSON.stringify(possMoves)}</pre> */}
+      <div
+        style={{
+          fontSize: "2em",
+          padding: "1em",
+          background: isWhiteTurn ? "white" : "black",
+          color: isWhiteTurn ? "black" : "white",
+        }}
+      >
+        {isWhiteTurn ? "White's Turn" : "Black's Turn"}
+      </div>
       <div
         style={{
           display: "grid",
@@ -60,7 +69,15 @@ function App() {
             return (
               <Tile
                 key={rowIdx + colIdx}
-                style={isPoss ? { background: "cyan" } : {}}
+                style={
+                  isPoss
+                    ? {
+                        background: "cyan",
+                        border: "#00bdbd solid",
+                        boxSizing: "border-box",
+                      }
+                    : {}
+                }
                 onClick={() => {
                   if (isPoss) {
                     const myPiece = board[selectedPiece.row][selectedPiece.col];
@@ -69,17 +86,23 @@ function App() {
                     setBoard([...board]);
                     setSelectedPiece(null);
                     setPossMoves([]);
+                    setIsWhiteTurn(() => !isWhiteTurn);
                   } else if (piece) {
-                    setSelectedPiece({ piece, row: rowIdx, col: colIdx });
-                    debugger;
-                    setPossMoves(
-                      pieceTypes[piece?.type].getPossMoves({
-                        row: rowIdx,
-                        col: colIdx,
-                        isWhite: piece?.isWhite,
-                        board,
-                      })
-                    );
+                    if (isWhiteTurn === piece.isWhite) {
+                      setSelectedPiece({ piece, row: rowIdx, col: colIdx });
+                      setPossMoves(
+                        pieceTypes[piece?.type].getPossMoves({
+                          row: rowIdx,
+                          col: colIdx,
+                          isWhite: piece?.isWhite,
+                          board,
+                        })
+                      );
+                    } else {
+                      setPossMoves([]);
+                    }
+                  } else {
+                    setPossMoves([]);
                   }
                 }}
                 {...{ rowIdx, colIdx, piece }}
