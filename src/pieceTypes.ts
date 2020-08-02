@@ -6,22 +6,21 @@ import King from "./Icons/King";
 import Bishop from "./Icons/Bishop";
 
 /** gets moves in a straight line one direction
- * ex: getLineMoves({ board, piece, offset: { row: 0, col: 1 }}) # gets horizontal moves left
+ * ex: getStraightMoves({ board, piece, offset: { row: 0, col: 1 }}) # gets horizontal moves left
  */
-function getLineMoves({
+function getStraightMoves({
   board,
   piece,
   offset,
 }: {
   board: any;
-  piece: { col; row; isWhite: boolean };
-  offset: { col; row };
+  piece: { col: number; row: number; isWhite: boolean };
+  offset: { col: number; row: number };
 }) {
   const moves = [];
   let newCol = piece.col;
   let newRow = piece.row;
   while (newCol <= 7 && newCol >= 0 && newRow <= 7 && newRow >= 0) {
-    console.log({ newCol, newRow });
     newCol += offset.col;
     newRow += offset.row;
     const pieceInWay = board[newRow]?.[newCol];
@@ -34,6 +33,61 @@ function getLineMoves({
     moves.push({ row: newRow, col: newCol });
   }
   return moves;
+}
+
+function getHorizontalMoves({ board, piece }) {
+  return [
+    ...getStraightMoves({
+      board,
+      piece,
+      offset: { row: 0, col: 1 },
+    }),
+    ...getStraightMoves({
+      board,
+      piece,
+      offset: { row: 0, col: -1 },
+    }),
+  ];
+}
+
+function getVerticalMoves({ board, piece }) {
+  return [
+    ...getStraightMoves({
+      board,
+      piece,
+      offset: { row: 1, col: 0 },
+    }),
+    ...getStraightMoves({
+      board,
+      piece,
+      offset: { row: -1, col: 0 },
+    }),
+  ];
+}
+
+function getDiagonalMoves({ board, piece }) {
+  return [
+    ...getStraightMoves({
+      board,
+      piece,
+      offset: { row: 1, col: 1 },
+    }),
+    ...getStraightMoves({
+      board,
+      piece,
+      offset: { row: -1, col: -1 },
+    }),
+    ...getStraightMoves({
+      board,
+      piece,
+      offset: { row: -1, col: 1 },
+    }),
+    ...getStraightMoves({
+      board,
+      piece,
+      offset: { row: 1, col: -1 },
+    }),
+  ];
 }
 
 const pieceTypes = {
@@ -62,32 +116,18 @@ const pieceTypes = {
   },
   Bishop: {
     icon: Bishop,
-    getPossMoves: () => [],
+    getPossMoves: ({ row, col, board, isWhite }) => {
+      const piece = { isWhite, row, col };
+      return getDiagonalMoves({ board, piece });
+    },
   },
   Rok: {
     icon: Rok,
     getPossMoves: ({ row, col, board, isWhite }) => {
+      const piece = { isWhite, row, col };
       return [
-        ...getLineMoves({
-          board,
-          piece: { isWhite, row, col },
-          offset: { row: 0, col: 1 },
-        }),
-        ...getLineMoves({
-          board,
-          piece: { isWhite, row, col },
-          offset: { row: 0, col: -1 },
-        }),
-        ...getLineMoves({
-          board,
-          piece: { isWhite, row, col },
-          offset: { row: 1, col: 0 },
-        }),
-        ...getLineMoves({
-          board,
-          piece: { isWhite, row, col },
-          offset: { row: -1, col: 0 },
-        }),
+        ...getHorizontalMoves({ board, piece }),
+        ...getVerticalMoves({ board, piece }),
       ];
     },
   },
@@ -127,25 +167,34 @@ const pieceTypes = {
   King: {
     icon: King,
     getPossMoves: ({ row, col, isWhite, board }) => {
+      const piece = { row, col, isWhite };
       const moves = [];
       [-1, 0, 1].forEach((rowOffset) => {
         [-1, 0, 1].forEach((colOffset) => {
-          const newRow = row + rowOffset;
-          const newCol = col + colOffset;
-          if (newRow === row && newCol === col) {
-            // can't stay in place
-          } else {
-            const pieceInWay = board[newRow]?.[newCol];
-            if (pieceInWay?.isWhite !== isWhite) {
-              moves.push({ row: newRow, col: newCol });
-            }
+          const move = getStraightMoves({
+            board,
+            piece,
+            offset: { row: rowOffset, col: colOffset },
+          })[0];
+          if (move) {
+            moves.push(move);
           }
         });
       });
       return moves;
     },
   },
-  Queen: { icon: Queen, getPossMoves: () => [] },
+  Queen: {
+    icon: Queen,
+    getPossMoves: ({ row, col, board, isWhite }) => {
+      const piece = { isWhite, row, col };
+      return [
+        ...getHorizontalMoves({ board, piece }),
+        ...getVerticalMoves({ board, piece }),
+        ...getDiagonalMoves({ board, piece }),
+      ];
+    },
+  },
 };
 
 export { pieceTypes };

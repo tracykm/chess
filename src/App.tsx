@@ -56,27 +56,8 @@ function App() {
                     setBoard([...board]);
                     setSelectedPiece(null);
                     setPossMoves([]);
-                    // const newPossMoves = pieceTypes[myPiece?.type].getPossMoves(
-                    //   {
-                    //     row: rowIdx,
-                    //     col: colIdx,
-                    //     isWhite: piece?.isWhite,
-                    //     board,
-                    //   }
-                    // );
-                    // newPossMoves.find(({ row, col }) => {
-                    //   const inDangerPiece = board[row][col];
-                    //   if (
-                    //     inDangerPiece &&
-                    //     inDangerPiece?.type === "King" &&
-                    //     inDangerPiece?.isWhite !== piece?.isWhite
-                    //   ) {
-                    //     alert("Check!");
-                    //   }
-                    // });
                   } else if (piece) {
                     setSelectedPiece({ piece, row: rowIdx, col: colIdx });
-                    debugger;
                     setPossMoves(
                       pieceTypes[piece?.type].getPossMoves({
                         row: rowIdx,
