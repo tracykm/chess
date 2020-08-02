@@ -5,6 +5,37 @@ import Queen from "./Icons/Queen";
 import King from "./Icons/King";
 import Bishop from "./Icons/Bishop";
 
+/** gets moves in a straight line one direction
+ * ex: getLineMoves({ board, piece, offset: { row: 0, col: 1 }}) # gets horizontal moves left
+ */
+function getLineMoves({
+  board,
+  piece,
+  offset,
+}: {
+  board: any;
+  piece: { col; row; isWhite: boolean };
+  offset: { col; row };
+}) {
+  const moves = [];
+  let newCol = piece.col;
+  let newRow = piece.row;
+  while (newCol <= 7 && newCol >= 0 && newRow <= 7 && newRow >= 0) {
+    console.log({ newCol, newRow });
+    newCol += offset.col;
+    newRow += offset.row;
+    const pieceInWay = board[newRow]?.[newCol];
+    if (pieceInWay) {
+      if (pieceInWay.isWhite !== piece.isWhite) {
+        moves.push({ row: newRow, col: newCol });
+      }
+      break;
+    }
+    moves.push({ row: newRow, col: newCol });
+  }
+  return moves;
+}
+
 const pieceTypes = {
   Knight: {
     icon: Knight,
@@ -36,60 +67,28 @@ const pieceTypes = {
   Rok: {
     icon: Rok,
     getPossMoves: ({ row, col, board, isWhite }) => {
-      const moves = [];
-      let newCol = col;
-      while (newCol < 7) {
-        newCol++;
-        const pieceInWay = board[row][newCol];
-        if (pieceInWay) {
-          if (pieceInWay.isWhite !== isWhite) {
-            moves.push({ row, col: newCol });
-          }
-          break;
-        }
-        moves.push({ row, col: newCol });
-      }
-      newCol = col;
-      while (newCol > -1) {
-        newCol--;
-        const pieceInWay = board[row][newCol];
-        if (pieceInWay) {
-          if (pieceInWay.isWhite !== isWhite) {
-            moves.push({ row, col: newCol });
-          }
-          break;
-        }
-        moves.push({ row, col: newCol });
-      }
-
-      // vertical moves
-      let newRow = row;
-      while (newRow < 7) {
-        newRow++;
-
-        const pieceInWay = board[newRow]?.[col];
-        if (pieceInWay) {
-          if (pieceInWay.isWhite !== isWhite) {
-            moves.push({ row: newRow, col });
-          }
-          break;
-        }
-        moves.push({ row: newRow, col });
-      }
-      newRow = row;
-      while (newRow > -1) {
-        newRow--;
-        const pieceInWay = board[newRow]?.[col];
-        if (pieceInWay) {
-          if (pieceInWay.isWhite !== isWhite) {
-            moves.push({ row: newRow, col });
-          }
-          break;
-        }
-        moves.push({ row: newRow, col });
-      }
-
-      return moves;
+      return [
+        ...getLineMoves({
+          board,
+          piece: { isWhite, row, col },
+          offset: { row: 0, col: 1 },
+        }),
+        ...getLineMoves({
+          board,
+          piece: { isWhite, row, col },
+          offset: { row: 0, col: -1 },
+        }),
+        ...getLineMoves({
+          board,
+          piece: { isWhite, row, col },
+          offset: { row: 1, col: 0 },
+        }),
+        ...getLineMoves({
+          board,
+          piece: { isWhite, row, col },
+          offset: { row: -1, col: 0 },
+        }),
+      ];
     },
   },
   Pawn: {
