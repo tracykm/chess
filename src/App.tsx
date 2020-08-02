@@ -1,6 +1,6 @@
 import React from "react";
 import "./App.css";
-import { pieceTypes } from "./pieceTypes";
+import { pieceTypes, canCastle } from "./pieceTypes";
 import { BOARD_START } from "./BOARD_START";
 
 const COL_NAMES = ["A", "B", "C", "D", "E", "F", "G", "H"];
@@ -27,8 +27,8 @@ function Tile({ rowIdx, colIdx, piece, onClick, style }) {
           textAlign: "center",
         }}
       >
-        {COL_NAMES[colIdx]}
-        {8 - rowIdx}
+        {/* {COL_NAMES[colIdx]}
+        {8 - rowIdx} */}r{rowIdx} c{colIdx}
       </div>
       <div style={{ padding: 10 }}>
         {piece ? <Icon isWhite={piece.isWhite} /> : piece}
@@ -38,7 +38,10 @@ function Tile({ rowIdx, colIdx, piece, onClick, style }) {
 }
 
 function App() {
-  const [possMoves, setPossMoves] = React.useState([]);
+  const [possMoves, setPossMoves] = React.useState<
+    { row: number; col: number }[]
+  >([]);
+  const [specialMoves, setSpecialMoves] = React.useState([]);
   const [board, setBoard] = React.useState(BOARD_START);
   const [selectedPiece, setSelectedPiece] = React.useState<{
     piece: {};
@@ -71,11 +74,14 @@ function App() {
             const isPoss = !!possMoves.find(
               ({ row, col }) => row === rowIdx && col === colIdx
             );
+            const currentSpecialMove = specialMoves.find(
+              (d) => d.row === rowIdx && d.col === colIdx
+            );
             return (
               <Tile
                 key={rowIdx + colIdx}
                 style={
-                  isPoss
+                  isPoss || currentSpecialMove
                     ? {
                         background: "cyan",
                         border: "#00bdbd solid",
@@ -103,6 +109,17 @@ function App() {
                           board,
                         })
                       );
+                      const special = [];
+                      const castleOpts = canCastle({
+                        board,
+                        piece: {
+                          row: rowIdx,
+                          col: colIdx,
+                          isWhite: piece.isWhite,
+                        },
+                      });
+                      castleOpts && special.push(castleOpts);
+                      setSpecialMoves(special);
                     } else {
                       setPossMoves([]);
                     }
