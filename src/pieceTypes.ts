@@ -50,57 +50,90 @@ function getHorizontalMoves({ board, piece }) {
   ];
 }
 
-export function canCastle({ board, piece }) {
-  if (piece.type !== "King") {
-    return;
-  }
+export function castleMoves({ board, piece }) {
+  const moves: Array<{
+    row: number;
+    col: number;
+    type?: string;
+    otherPiece?: {
+      startRow: number;
+      startCol: number;
+      row: number;
+      col: number;
+    };
+  }> = [];
 
   if (piece.isWhite === false) {
-    if (board[0][4].type === "King" && board[0][4].isWhite) {
-      if (board[0][7].type === "Rok" && board[0][7].isWhite) {
+    if (
+      board[0][4]?.type === "King" &&
+      board[0][4]?.isWhite === piece?.isWhite
+    ) {
+      if (
+        board[0][7]?.type === "Rok" &&
+        board[0][7]?.isWhite === piece?.isWhite
+      ) {
         // wayClear
-        if (board[0][5] && board[0][6]) {
-          return {
-            move: { row: 0, col: 6 },
-            otherPiece: { id: board[0][7].id, row: 0, col: 5 },
-          };
+        if (!board[0][5] && !board[0][6]) {
+          moves.push({
+            row: 0,
+            col: 6,
+            type: "Castle",
+            otherPiece: { startRow: 0, startCol: 7, row: 0, col: 5 },
+          });
         }
       }
-      if (board[0][0].type === "Rok" && board[0][0].isWhite) {
+      if (
+        board[0][0]?.type === "Rok" &&
+        board[0][0]?.isWhite === piece?.isWhite
+      ) {
         // wayClear
-        if (board[0][1] && board[0][2] && board[0][3]) {
-          return {
-            move: { row: 0, col: 2 },
-            otherPiece: { id: board[0][0].id, row: 0, col: 3 },
-          };
+        if (!board[0][1] && !board[0][2] && !board[0][3]) {
+          moves.push({
+            row: 0,
+            col: 2,
+            type: "Castle",
+            otherPiece: { startRow: 0, startCol: 0, row: 0, col: 3 },
+          });
         }
       }
     }
   }
 
   // hasn't moved
-  if (piece.isWhite) {
-    if (board[7][4].type === "King" && board[7][4].isWhite) {
-      if (board[7][7].type === "Rok" && board[7][7].isWhite) {
+  if (piece?.isWhite) {
+    if (
+      board[7][4]?.type === "King" &&
+      board[7][4]?.isWhite === piece?.isWhite
+    ) {
+      if (
+        board[7][7]?.type === "Rok" &&
+        board[7][7]?.isWhite === piece?.isWhite
+      ) {
         // wayClear
-        if (board[7][5] && board[7][6]) {
-          return {
-            move: { row: 7, col: 6 },
-            otherPiece: { id: board[7][7], row: 7, col: 5 },
-          };
+        if (!board[7][5] && !board[7][6]) {
+          moves.push({
+            row: 7,
+            col: 6,
+            otherPiece: { startRow: 7, startCol: 7, row: 7, col: 5 },
+          });
         }
       }
-      if (board[7][0].type === "Rok" && board[7][0].isWhite) {
+      if (
+        board[7][0]?.type === "Rok" &&
+        board[7][0]?.isWhite === piece?.isWhite
+      ) {
         // wayClear
-        if (board[7][1] && board[7][2] && board[7][3]) {
-          return {
-            move: { row: 7, col: 2 },
-            otherPiece: { id: board[7][0], row: 7, col: 3 },
-          };
+        if (!board[7][1] && !board[7][2] && !board[7][3]) {
+          moves.push({
+            row: 7,
+            col: 2,
+            otherPiece: { startRow: 7, startCol: 0, row: 7, col: 5 },
+          });
         }
       }
     }
   }
+  return moves;
 }
 
 function getVerticalMoves({ board, piece }) {
@@ -221,7 +254,7 @@ const pieceTypes = {
     icon: King,
     getPossMoves: ({ row, col, isWhite, board }) => {
       const piece = { row, col, isWhite };
-      const moves = [];
+      let moves = [];
       [-1, 0, 1].forEach((rowOffset) => {
         [-1, 0, 1].forEach((colOffset) => {
           const move = getStraightMoves({
@@ -234,6 +267,9 @@ const pieceTypes = {
           }
         });
       });
+      const specialMoves = castleMoves({ board, piece });
+      moves = [...moves, ...specialMoves];
+      console.log({ specialMoves, moves });
       return moves;
     },
   },

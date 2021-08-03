@@ -1,6 +1,6 @@
 import React from "react";
 import "./App.css";
-import { pieceTypes, canCastle } from "./pieceTypes";
+import { pieceTypes } from "./pieceTypes";
 import { BOARD_START } from "./BOARD_START";
 
 const COL_NAMES = ["A", "B", "C", "D", "E", "F", "G", "H"];
@@ -38,17 +38,14 @@ function Tile({ rowIdx, colIdx, piece, onClick, style }) {
 }
 
 function App() {
-  const [possMoves, setPossMoves] = React.useState<
-    { row: number; col: number }[]
-  >([]);
-  const [specialMoves, setSpecialMoves] = React.useState([]);
+  const [possMoves, setPossMoves] = React.useState([]);
   const [board, setBoard] = React.useState(BOARD_START);
   const [selectedPiece, setSelectedPiece] = React.useState<{
     piece: {};
     row: number;
     col: number;
   }>();
-  const [isWhiteTurn, setIsWhiteTurn] = React.useState(true);
+  const [isWhiteTurn, setIsWhiteTurn] = React.useState(false);
   return (
     <div className="App">
       <div
@@ -71,17 +68,14 @@ function App() {
       >
         {board.map((row, rowIdx) =>
           row.map((piece, colIdx) => {
-            const isPoss = !!possMoves.find(
+            const possMove = possMoves.find(
               ({ row, col }) => row === rowIdx && col === colIdx
-            );
-            const currentSpecialMove = specialMoves.find(
-              (d) => d.row === rowIdx && d.col === colIdx
             );
             return (
               <Tile
                 key={rowIdx + colIdx}
                 style={
-                  isPoss || currentSpecialMove
+                  possMove
                     ? {
                         background: "cyan",
                         border: "#00bdbd solid",
@@ -90,10 +84,22 @@ function App() {
                     : {}
                 }
                 onClick={() => {
-                  if (isPoss) {
+                  if (possMove) {
                     const myPiece = board[selectedPiece.row][selectedPiece.col];
                     board[selectedPiece.row][selectedPiece.col] = null;
                     board[rowIdx][colIdx] = myPiece;
+                    if (possMove.otherPiece) {
+                      const otherPiece =
+                        board[possMove.otherPiece.startRow][
+                          possMove.otherPiece.startCol
+                        ];
+                      board[possMove.otherPiece.startRow][
+                        possMove.otherPiece.startCol
+                      ] = null;
+                      board[possMove.otherPiece.row][
+                        possMove.otherPiece.col
+                      ] = otherPiece;
+                    }
                     setBoard([...board]);
                     setSelectedPiece(null);
                     setPossMoves([]);
@@ -109,17 +115,6 @@ function App() {
                           board,
                         })
                       );
-                      const special = [];
-                      const castleOpts = canCastle({
-                        board,
-                        piece: {
-                          row: rowIdx,
-                          col: colIdx,
-                          isWhite: piece.isWhite,
-                        },
-                      });
-                      castleOpts && special.push(castleOpts);
-                      setSpecialMoves(special);
                     } else {
                       setPossMoves([]);
                     }
